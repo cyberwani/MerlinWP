@@ -16,9 +16,8 @@
 }
 
 h1 {
-	@include font-smoothing;
 	border: 0;
-	color: #444;
+	color: $black;
 	font-size: 20px;
 	font-weight: 500;
 	margin: 0 0 20px;
@@ -70,7 +69,7 @@ p.success {
 	}
 }
 
-/* Applies styles when Reduced Motion is enabled */
+// Applies styles when Reduced Motion is enabled
 @media screen and (prefers-reduced-motion: reduce) {
 	@keyframes vanishIn {
 		0% {
@@ -99,7 +98,7 @@ p.success {
 	}
 }
 
-/* Applies styles when Reduced Motion is enabled */
+// Applies styles when Reduced Motion is enabled
 @media screen and (prefers-reduced-motion: reduce) {
 	@keyframes vanishOut {
 		0% {
@@ -131,6 +130,8 @@ p.success {
 @import "modules/chevron";
 
 @import "modules/spinner";
+
+@import "modules/tooltip";
 
 @import "modules/back-to-dashboard";
 

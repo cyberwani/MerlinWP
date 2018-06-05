@@ -17,20 +17,20 @@
 	.merlin__content--content & {
 		transition: opacity $speed cubic-bezier(.694, 0, .335, 1);
 	}
-	
+
 	body.exiting .merlin__content--content & {
 		opacity: 0;
 	}
 }
 
 .dots li {
-	height: 6px;
-	width: 6px;
+	height: 7px;
+	width: 7px;
 	padding: 0;
 	display: inline-block;
-	background: #e3e3e3;
+	background: $dotsBackground;
 	border-radius: 999px;
-	margin: 0 1px;
+	margin: 0 .01em;
 	position: relative;
 	top: -.15em;
 	z-index: 9999;
@@ -45,7 +45,7 @@
 	animation-fill-mode: both;
 	animation: popIn 900ms forwards;
 
-	/* Applies styles when Reduced Motion is enabled */
+	// Applies styles when Reduced Motion is enabled
 	@media screen and (prefers-reduced-motion: reduce) {
 		animation: none;
 		background: $blue;
@@ -57,14 +57,15 @@
 	border-radius: 999px;
 	content: '';
 	display: inline-block;
-	height: 7px;
-	left: 0;
+	height: 8px;
+	left: -0.037778em;
 	position: absolute;
 	transition: box-shadow 300ms cubic-bezier(.694, 0, .335, 1);
-	width: 7px;
+	width: 8px;
 	z-index: -1;
+	top: -.05em;
 
-	/* Applies styles when Reduced Motion is enabled */
+	// Applies styles when Reduced Motion is enabled
 	@media screen and (prefers-reduced-motion: reduce) {
 		animation: none;
 	}
@@ -85,8 +86,6 @@
     }
 }
 
-
-
 @keyframes popIn {
 	0% {
 		background: #e3e3e3;
@@ -96,7 +95,7 @@
 	55% {
 		background: #e3e3e3;
 		transform: scale(1);
-		
+
 	}
 	65% {
 		transform: scale(1.6);

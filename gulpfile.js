@@ -16,8 +16,8 @@ var packageName             = project;
 var bugReport               = pkg.author_uri;
 var lastTranslator          = pkg.author;
 var team                    = pkg.author_shop;
-var translatePath           = './languages';
-var translatableFiles       = ['./**/*.php', '!merlin-config-sample.php', '!merlin-filters.php' ];
+var translatePath           = './languages/' + destFile;
+var translatableFiles       = ['./**/*.php', '!merlin-config-sample.php', '!merlin-filters-sample.php' ];
 
 // Styles.
 var merlinStyleSRC          = './assets/scss/merlin.scss'; // Path to main .scss file.
@@ -26,7 +26,7 @@ var merlinCssFiles          = './assets/css/**/*.css'; // Path to main .scss fil
 var merlinStyleWatchFiles   = './assets/scss/**/*.scss'; // Path to all *.scss files inside css folder and inside them.
 
 // Scripts.
-var merlinScriptSRC         = './assets/js/*.js'; // Path to JS custom scripts folder.
+var merlinScriptSRC         = './assets/js/merlin.js'; // Path to JS custom scripts folder.
 var merlinScriptDestination = './assets/js/'; // Path to place the compiled JS custom scripts file.
 var merlinScriptFile        = 'merlin'; // Compiled JS file name.
 var merlinScriptWatchFiles  = './assets/js/*.js'; // Path to all *.scss files inside css folder and inside them.
@@ -35,7 +35,7 @@ var merlinScriptWatchFiles  = './assets/js/*.js'; // Path to all *.scss files in
 var projectPHPWatchFiles    = ['./**/*.php', '!_dist'];
 
 // Build files.
-var buildFiles      	    = ['./**', '!dist/', '!demo/**', '!.gitattributes', '!phpcs.ruleset.xml', '!package.json', '!gulpfile.js', '!LICENSE', '!README.md', '!assets/scss/**', '!merlin-config-sample.php', '!merlin-filters.php' ];
+var buildFiles              = ['./**', '!node_modules/**', '!dist/', '!demo/**', '!composer.json', '!composer.lock', '!.gitattributes', '!phpcs.xml', '!package.json', '!package-lock.json', '!gulpfile.js', '!LICENSE', '!README.md', '!assets/scss/**', '!merlin-config-sample.php', '!merlin-filters-sample.php', '!CODE_OF_CONDUCT.md' ];
 var buildDestination        = './dist/merlin/';
 var distributionFiles       = './dist/merlin/**/*';
 
@@ -57,15 +57,14 @@ const AUTOPREFIXER_BROWSERS = [
 /**
 * Load Plugins.
 */
+var gulp         = require('gulp');
 var autoprefixer = require('gulp-autoprefixer');
 var browserSync  = require('browser-sync').create();
 var cache        = require('gulp-cache');
 var cleaner      = require('gulp-clean');
-var concat       = require('gulp-concat');
 var copy         = require('gulp-copy');
 var csscomb      = require('gulp-csscomb');
 var filter       = require('gulp-filter');
-var gulp         = require('gulp');
 var lineec       = require('gulp-line-ending-corrector');
 var minifycss    = require('gulp-clean-css');
 var notify       = require('gulp-notify');
@@ -78,6 +77,7 @@ var sort         = require('gulp-sort');
 var uglify       = require('gulp-uglify');
 var wpPot        = require('gulp-wp-pot');
 var zip          = require('gulp-zip');
+var composer     = require('gulp-composer');
 
 /**
  * Development Tasks.
@@ -119,7 +119,7 @@ gulp.task('styles', function () {
 
 	.pipe( gulp.dest( merlinStyleDestination ) )
 
-	.pipe( browserSync.stream() ) 
+	.pipe( browserSync.stream() )
 
 	.pipe( rename( { suffix: '.min' } ) )
 
@@ -134,9 +134,6 @@ gulp.task('styles', function () {
 
 gulp.task( 'scripts', function() {
 	gulp.src( merlinScriptSRC )
-	.pipe( concat( merlinScriptFile + '.min.js' ) )
-	.pipe( lineec() )
-	.pipe( gulp.dest( merlinScriptDestination ) )
 	.pipe( rename( {
 		basename: merlinScriptFile,
 		suffix: '.min'
@@ -144,12 +141,16 @@ gulp.task( 'scripts', function() {
 	.pipe( uglify() )
 	.pipe( lineec() )
 	.pipe( gulp.dest( merlinScriptDestination ) )
-	
+
 });
 
 gulp.task( 'default', ['clear', 'styles', 'scripts', 'browser_sync' ], function () {
 	gulp.watch( projectPHPWatchFiles, reload );
 	gulp.watch( merlinStyleWatchFiles, [ 'styles' ] );
+});
+
+gulp.task("composer", function () {
+	composer({ "async": false });
 });
 
 /**
@@ -178,7 +179,7 @@ gulp.task( 'build-clean', function () {
 	.pipe(cleaner());
 });
 
-gulp.task( 'build-copy', ['build-clean'], function() {
+gulp.task( 'build-copy', ['build-clean', 'composer'], function() {
     return gulp.src( buildFiles )
     .pipe( copy( buildDestination ) );
 });
@@ -203,7 +204,7 @@ gulp.task('build-variables', ['build-clean-and-copy'], function () {
 });
 
 gulp.task( 'build-zip', ['build-variables'] , function() {
-    return gulp.src( buildDestination+'/**' )
+    return gulp.src( buildDestination+'/**' , { base: 'dist' } )
     .pipe( zip( 'merlin.zip' ) )
     .pipe( gulp.dest( './dist/' ) );
 });
